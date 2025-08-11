@@ -4,7 +4,7 @@ import { Search, X } from "lucide-react-native";
 import React from "react";
 import { TextInput, View } from "react-native";
 
-export const Searchbar = () => {
+const Searchbar = () => {
   const { searchValue, setSearchValue } = useSearchStore();
 
   return (
@@ -30,3 +30,5 @@ export const Searchbar = () => {
     </View>
   );
 };
+
+export default Searchbar;

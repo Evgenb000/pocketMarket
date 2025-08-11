@@ -53,9 +53,13 @@ export default function TabLayout() {
                   </View>
                 ) : (
                   <View className="w-36 h-12 justify-center mt-3 items-center rounded-full">
-                    <Text className="text-blue-slate">
-                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    </Text>
+                    {tab === "home" ? (
+                      <House color={colors.red} />
+                    ) : tab === "cart" ? (
+                      <ShoppingCart color={colors.red} />
+                    ) : (
+                      tab === "profile" && <User color={colors.red} />
+                    )}
                   </View>
                 ),
             }}
