@@ -3,7 +3,7 @@ import { ScrollView, Text, View } from "react-native";
 
 export default function Profile() {
   return (
-    <View className="flex-1 bg-lightGray">
+    <View className="flex-1 bg-blue">
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
