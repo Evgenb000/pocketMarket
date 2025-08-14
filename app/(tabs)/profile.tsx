@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Image,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -39,6 +40,18 @@ export default function Profile() {
         renderItem={({ item }) => (
           <View className="mb-4">
             <Text className="text-lg font-bold">{item.name}</Text>
+
+            {item.image_url && (
+              <View className="mt-2">
+                <Image
+                  src={item.image_url}
+                  alt={item.name}
+                  className="w-full"
+                  width={300}
+                  height={300}
+                />
+              </View>
+            )}
 
             <Text className="text-2xl">
               {(item.price / 100).toLocaleString("en-US")} $
