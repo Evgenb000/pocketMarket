@@ -34,7 +34,10 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      ["@prisma/react-native"]
+      [
+        "@prisma/react-native"
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
