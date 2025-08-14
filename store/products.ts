@@ -1,4 +1,3 @@
-import { logJson } from "@/logjson";
 import { ProductsService } from "@/services/products";
 import { Product } from "@/types/products";
 import { create } from "zustand";
@@ -48,8 +47,6 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
         currentPage: 1,
         loading: false,
       });
-
-      logJson("products1", get().products);
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : "Неизвестная ошибка",
