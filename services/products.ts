@@ -1,5 +1,4 @@
 import { supabase } from "@/supabase/supabase";
-import { ProductInsert, ProductUpdate } from "@/types/products";
 
 export class ProductsService {
   static async getProducts(options?: {
@@ -40,22 +39,18 @@ export class ProductsService {
       )
       .eq("is_available", true);
 
-    // Фильтрация по категории
     if (categoryId) {
       query = query.eq("category_id", categoryId);
     }
 
-    // Поиск по названию и описанию
     if (searchQuery) {
       query = query.or(
         `name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`
       );
     }
 
-    // Сортировка
     query = query.order(sortBy, { ascending: sortOrder === "asc" });
 
-    // Пагинация
     const from = (page - 1) * limit;
     const to = from + limit - 1;
     query = query.range(from, to);
@@ -73,7 +68,6 @@ export class ProductsService {
     };
   }
 
-  // Получить товар по ID
   static async getProductById(id: string) {
     const { data, error } = await supabase
       .from("products")
@@ -106,71 +100,73 @@ export class ProductsService {
     return data;
   }
 
-  // Создать новый товар (для админки)
-  static async createProduct(product: ProductInsert) {
-    const { data, error } = await supabase
-      .from("products")
-      .insert(product)
-      .select()
-      .single();
+  // TODO: Admin panel
 
-    if (error) {
-      throw new Error(`Ошибка создания товара: ${error.message}`);
-    }
+  // static async createProduct(product: ProductInsert) {
+  //   const { data, error } = await supabase
+  //     .from("products")
+  //     .insert(product)
+  //     .select()
+  //     .single();
 
-    return data;
-  }
+  //   if (error) {
+  //     throw new Error(`Ошибка создания товара: ${error.message}`);
+  //   }
 
-  // Обновить товар
-  static async updateProduct(id: string, updates: ProductUpdate) {
-    const { data, error } = await supabase
-      .from("products")
-      .update(updates)
-      .eq("id", id)
-      .select()
-      .single();
+  //   return data;
+  // }
 
-    if (error) {
-      throw new Error(`Ошибка обновления товара: ${error.message}`);
-    }
+  // static async updateProduct(id: string, updates: ProductUpdate) {
+  //   const { data, error } = await supabase
+  //     .from("products")
+  //     .update(updates)
+  //     .eq("id", id)
+  //     .select()
+  //     .single();
 
-    return data;
-  }
+  //   if (error) {
+  //     throw new Error(`Ошибка обновления товара: ${error.message}`);
+  //   }
 
-  // Получить похожие товары
-  static async getSimilarProducts(
-    productId: string,
-    categoryId: string,
-    limit = 4
-  ) {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("category_id", categoryId)
-      .eq("is_available", true)
-      .neq("id", productId)
-      .limit(limit);
+  //   return data;
+  // }
 
-    if (error) {
-      throw new Error(`Ошибка загрузки похожих товаров: ${error.message}`);
-    }
+  // TODO: Get similar products
 
-    return data || [];
-  }
+  // static async getSimilarProducts(
+  //   productId: string,
+  //   categoryId: string,
+  //   limit = 4
+  // ) {
+  //   const { data, error } = await supabase
+  //     .from("products")
+  //     .select("*")
+  //     .eq("category_id", categoryId)
+  //     .eq("is_available", true)
+  //     .neq("id", productId)
+  //     .limit(limit);
 
-  // Получить товары со скидкой (если есть поле discount)
-  static async getDiscountedProducts(limit = 10) {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .not("meta_data->discount", "is", null)
-      .eq("is_available", true)
-      .limit(limit);
+  //   if (error) {
+  //     throw new Error(`Ошибка загрузки похожих товаров: ${error.message}`);
+  //   }
 
-    if (error) {
-      throw new Error(`Ошибка загрузки товаров со скидкой: ${error.message}`);
-    }
+  //   return data || [];
+  // }
 
-    return data || [];
-  }
+  // TODO: Get discounted products
+
+  // static async getDiscountedProducts(limit = 10) {
+  //   const { data, error } = await supabase
+  //     .from("products")
+  //     .select("*")
+  //     .not("meta_data->discount", "is", null)
+  //     .eq("is_available", true)
+  //     .limit(limit);
+
+  //   if (error) {
+  //     throw new Error(`Ошибка загрузки товаров со скидкой: ${error.message}`);
+  //   }
+
+  //   return data || [];
+  // }
 }

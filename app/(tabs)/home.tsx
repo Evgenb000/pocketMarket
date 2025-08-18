@@ -1,5 +1,6 @@
 import React from "react";
-import { FlatList, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
+import Categories from "../components/shared/categories";
 import Products from "../components/shared/products";
 import Searchbar from "../components/ui/searchbar";
 
@@ -15,18 +16,7 @@ export default function Home() {
         </View>
         <Searchbar></Searchbar>
         <View className="mt-4">
-          <FlatList
-            data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-            horizontal
-            renderItem={({ item: i }) => (
-              <View className="bg-light rounded-full w-20 h-20">
-                <Text className="text-center text-blue">{i}</Text>
-              </View>
-            )}
-            keyExtractor={(item) => item.toString()}
-            contentContainerStyle={{ gap: 12, paddingHorizontal: 12 }}
-            showsHorizontalScrollIndicator={false}
-          ></FlatList>
+          <Categories></Categories>
         </View>
         <Products></Products>
       </ScrollView>

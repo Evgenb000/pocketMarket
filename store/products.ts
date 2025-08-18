@@ -3,19 +3,18 @@ import { Product } from "@/types/products";
 import { create } from "zustand";
 
 interface ProductsState {
-  // Состояние
   products: Product[];
   currentProduct: Product | null;
   loading: boolean;
   error: string | null;
   hasMore: boolean;
   currentPage: number;
+  currentCategoryFilter: string | null; // Добавляем отслеживание текущего фильтра
 
-  // Действия
   fetchProducts: (
     options?: Parameters<typeof ProductsService.getProducts>[0]
   ) => Promise<void>;
-  fetchMoreProducts: () => Promise<void>;
+  fetchMoreProducts: (categoryId?: string) => Promise<void>; // Обновляем для учета категории
   fetchProductById: (id: string) => Promise<void>;
   clearProducts: () => void;
   clearError: () => void;
@@ -23,28 +22,28 @@ interface ProductsState {
 }
 
 export const useProductsStore = create<ProductsState>((set, get) => ({
-  // Начальное состояние
   products: [],
   currentProduct: null,
   loading: false,
   error: null,
   hasMore: true,
   currentPage: 1,
+  currentCategoryFilter: null,
 
-  // Загрузка списка товаров
   fetchProducts: async (options) => {
     set({ loading: true, error: null });
 
     try {
       const response = await ProductsService.getProducts({
         ...options,
-        page: 1, // Сбрасываем на первую страницу
+        page: 1,
       });
 
       set({
         products: response.data,
         hasMore: response.hasMore,
         currentPage: 1,
+        currentCategoryFilter: options?.categoryId || null,
         loading: false,
       });
     } catch (error) {
@@ -55,9 +54,8 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
     }
   },
 
-  // Загрузка дополнительных товаров (пагинация)
-  fetchMoreProducts: async () => {
-    const { currentPage, hasMore, loading } = get();
+  fetchMoreProducts: async (categoryId) => {
+    const { currentPage, hasMore, loading, currentCategoryFilter } = get();
 
     if (!hasMore || loading) return;
 
@@ -66,6 +64,7 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
     try {
       const response = await ProductsService.getProducts({
         page: currentPage + 1,
+        categoryId: categoryId || currentCategoryFilter || undefined,
       });
 
       set((state) => ({
@@ -82,7 +81,6 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
     }
   },
 
-  // Загрузка конкретного товара
   fetchProductById: async (id: string) => {
     set({ loading: true, error: null, currentProduct: null });
 
@@ -97,17 +95,19 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
     }
   },
 
-  // Очистка списка
   clearProducts: () => {
-    set({ products: [], currentPage: 1, hasMore: true });
+    set({
+      products: [],
+      currentPage: 1,
+      hasMore: true,
+      currentCategoryFilter: null,
+    });
   },
 
-  // Очистка ошибки
   clearError: () => {
     set({ error: null });
   },
 
-  // Установка текущего товара
   setCurrentProduct: (product) => {
     set({ currentProduct: product });
   },

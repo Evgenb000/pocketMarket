@@ -1,4 +1,5 @@
 import { useProductsStore } from "@/store/products";
+import { useCategoriesStore } from "@/store/categories";
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -11,10 +12,13 @@ import ProductCard from "./productCard";
 
 export default function Products() {
   const { products, loading, error, fetchProducts } = useProductsStore();
+  const { currentCategory } = useCategoriesStore();
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    fetchProducts({
+      categoryId: currentCategory?.id.toString(),
+    });
+  }, [fetchProducts, currentCategory]);
 
   if (loading) {
     return (
@@ -37,6 +41,13 @@ export default function Products() {
       className="px-4 py-6"
       contentContainerStyle={{ paddingBottom: 40 }}
     >
+      {currentCategory && (
+        <View className="mb-4">
+          <Text className="text-lg font-semibold text-gray-800">
+            {currentCategory.name}
+          </Text>
+        </View>
+      )}
       <FlatList
         data={products}
         renderItem={({ item }) => (
