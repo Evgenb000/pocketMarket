@@ -1,28 +1,56 @@
-import React from "react";
-import { FlatList, View } from "react-native";
+import { useProductsStore } from "@/store/products";
+import React, { useEffect } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import ProductCard from "./productCard";
 
-const Products = () => {
+export default function Products() {
+  const { products, loading, error, fetchProducts } = useProductsStore();
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  if (loading) {
+    return (
+      <View>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
+
+  if (error || !products) {
+    return (
+      <View>
+        <Text>{error || "Товар не найден"}</Text>
+      </View>
+    );
+  }
+
   return (
-    <View className="mt-4">
+    <ScrollView
+      className="px-4 py-6"
+      contentContainerStyle={{ paddingBottom: 40 }}
+    >
       <FlatList
-        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-        renderItem={({ item: i }) => <ProductCard>{i}</ProductCard>}
-        keyExtractor={(item) => item.toString()}
-        showsHorizontalScrollIndicator={false}
+        data={products}
+        renderItem={({ item }) => (
+          <ProductCard key={item.id} item={item}></ProductCard>
+        )}
+        keyExtractor={(item) => item.id.toString()}
         scrollEnabled={false}
+        contentContainerStyle={{ gap: 12 }}
+        showsVerticalScrollIndicator={false}
         numColumns={2}
-        contentContainerStyle={{
-          paddingHorizontal: 8,
-          gap: 8,
-        }}
         columnWrapperStyle={{
           justifyContent: "space-between",
-          marginHorizontal: 8,
         }}
       ></FlatList>
-    </View>
+    </ScrollView>
   );
-};
-
-export default Products;
+}

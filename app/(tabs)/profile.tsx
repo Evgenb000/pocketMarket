@@ -46,9 +46,9 @@ export default function Profile() {
                 <Image
                   src={item.image_url}
                   alt={item.name}
-                  className="w-full"
-                  width={300}
-                  height={300}
+                  width={160}
+                  height={240}
+                  style={{ objectFit: "contain" }}
                 />
               </View>
             )}
